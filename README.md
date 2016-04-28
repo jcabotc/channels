@@ -1,6 +1,6 @@
 # Channels
 
-**TODO: Add description**
+An application to manage rabbitMQ consumers and publishers.
 
 ## Installation
 
