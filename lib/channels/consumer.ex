@@ -30,14 +30,17 @@ defmodule Channels.Consumer do
     GenServer.start_link(__MODULE__, args, opts)
   end
 
-  def ack(%{adapter: adapter, chan: chan} = meta, opts \\ []),
-    do: adapter.ack(chan, meta, opts)
+  def ack(%{adapter: adapter, chan: chan} = meta, opts \\ []) do
+    adapter.ack(chan, meta, opts)
+  end
 
-  def nack(%{adapter: adapter, chan: chan} = meta, opts \\ []),
-    do: adapter.nack(chan, meta, opts)
+  def nack(%{adapter: adapter, chan: chan} = meta, opts \\ []) do
+    adapter.nack(chan, meta, opts)
+  end
 
-  def reject(%{adapter: adapter, chan: chan} = meta, opts \\ []),
-    do: adapter.reject(chan, meta, opts)
+  def reject(%{adapter: adapter, chan: chan} = meta, opts \\ []) do
+    adapter.reject(chan, meta, opts)
+  end
 
   def init({mod, adapter, provider, config, initial}) do
     chan = provider.setup(config)
@@ -45,6 +48,7 @@ defmodule Channels.Consumer do
     case mod.init(initial) do
       {:ok, given} ->
         {:ok, %{chan: chan, mod: mod, adapter: adapter, given: given}}
+
       {:stop, reason} ->
         {:stop, reason}
     end
@@ -52,10 +56,17 @@ defmodule Channels.Consumer do
 
   def handle_info(message, %{adapter: adapter} = state) do
     case adapter.handle(message) do
-      {:ready, raw_meta}            -> ready(raw_meta, state)
-      {:deliver, payload, raw_meta} -> deliver(payload, raw_meta, state)
-      {:cancel, raw_meta}           -> cancel(raw_meta, state)
-      :unknown                      -> {:noreply, state}
+      {:ready, raw_meta} ->
+        ready(raw_meta, state)
+
+      {:deliver, payload, raw_meta} ->
+        deliver(payload, raw_meta, state)
+
+      {:cancel, raw_meta} ->
+        cancel(raw_meta, state)
+
+      :unknown ->
+        {:noreply, state}
     end
   end
 

@@ -10,10 +10,12 @@ defmodule Channels.Monitor.Supervisor do
   end
 
   def init({monitor, configs}) do
-    children = Enum.map configs, fn {name, config} ->
-      worker(monitor, [config], id: name)
-    end
+    children = Enum.map(configs, &spec(monitor, &1))
 
     supervise(children, strategy: :one_for_one)
+  end
+
+  defp spec(monitor, {name, config}) do
+    worker(monitor, [config, [name: name]], id: name)
   end
 end
