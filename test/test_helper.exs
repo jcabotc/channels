@@ -1,1 +1,1 @@
-ExUnit.start exclude: [:rabbitmq]
+ExUnit.start exclude: [:amqp_server]

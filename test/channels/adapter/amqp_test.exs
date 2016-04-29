@@ -1,6 +1,6 @@
 defmodule Channels.Adapter.AMQPTest do
   use ExUnit.Case
-  @moduletag :rabbitmq
+  @moduletag :amqp_server
 
   alias Channels.Adapter.AMQP, as: Adapter
 
