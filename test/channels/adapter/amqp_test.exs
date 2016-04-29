@@ -4,7 +4,7 @@ defmodule Channels.Adapter.AMQPTest do
 
   alias Channels.Adapter.AMQP, as: Adapter
 
-  @config Application.get_env(:channels, :connection)
+  @config Application.get_env(:channels, :main_connection)
 
   @exchange %{
     name: "__test__.channels_adapter_amqp_test_exchange",
