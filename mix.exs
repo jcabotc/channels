@@ -11,11 +11,11 @@ defmodule Channels.Mixfile do
   end
 
   def application do
-    [applications: [:logger],
+    [applications: [:logger, :amqp],
      mod: {Channels, []}]
   end
 
   defp deps do
-    []
+    [{:amqp, "0.1.4"}]
   end
 end
