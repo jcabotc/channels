@@ -41,7 +41,7 @@ defmodule Channels.Adapter.AMQP do
     do: {:deliver, payload, meta}
 
   def handle({:basic_cancel, meta}),
-    do: {:deliver, meta}
+    do: {:cancel, meta}
 
   def handle(_anything),
     do: :unknown
