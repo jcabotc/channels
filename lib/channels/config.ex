@@ -22,6 +22,33 @@ defmodule Channels.AdapterMissingError do
   """
 end
 
+defmodule Channels.ConnectionMissingError do
+  defexception message: """
+  Connections not defined.
+  To define a connection named :my_conn add to your config:
+
+    config :channels,
+      connections: [:my_conn]
+      ...
+
+  By default when starting a connection the adapter will receive
+  an empty configuration ([]). If you want to configure your
+  connections:
+
+    config :channels,
+      connections: [:main_conn, :alt_conn]
+      ...
+
+    config :channels, :main_conn,
+      host: "localhost",
+      port: 1234,
+      ...
+
+    config :channels, :main_conn,
+      "localhost:5678"
+  """
+end
+
 defmodule Channels.Config do
   @config Application.get_all_env(:channels)
 
@@ -42,7 +69,7 @@ defmodule Channels.Config do
       {:ok, names} ->
         Enum.map(names, &{&1, get_conn_config(config, &1)})
       :error ->
-        [{default_conn_name, get_conn_config(config, :connection)}]
+        raise Channels.ConnectionMissingError
     end
   end
 

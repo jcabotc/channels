@@ -14,23 +14,7 @@ defmodule Channels.ConfigTest do
     end
   end
 
-  test "conn_configs/1 with no definition" do
-    default_name = Config.default_conn_name
-
-    expected = [{default_name, []}]
-    assert expected == Config.conn_configs([])
-  end
-
-  test "conn_configs/1 with default definition" do
-    default_name = Config.default_conn_name
-    conn_config  = [host: "localhost", port: 1234]
-    config       = [connection: conn_config]
-
-    expected = [{default_name, conn_config}]
-    assert expected == Config.conn_configs(config)
-  end
-
-  test "conn_configs/1 with many definitions" do
+  test "conn_configs/1" do
     conn_config_1 = [host: "localhost", port: 1234]
 
     config = [
@@ -43,5 +27,11 @@ defmodule Channels.ConfigTest do
       {:last_conn, []}
     ]
     assert expected == Config.conn_configs(config)
+  end
+
+  test "conn_configs/1 when connections missing" do
+    assert_raise Channels.ConnectionMissingError, fn ->
+      Config.conn_configs([])
+    end
   end
 end

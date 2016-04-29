@@ -1,7 +1,7 @@
 defmodule Channels.Monitor do
   use GenServer
 
-  @adapter Application.get_env(:channels, :adapter)
+  @adapter Channels.Config.adapter
 
   def start_link(config, opts \\ []) do
     {adapter, opts} = Keyword.pop(opts, :adapter, @adapter)
