@@ -11,13 +11,16 @@ defmodule Channels.MonitorTest do
     Process.flag(:trap_exit, true)
 
     {:ok, monitor} = Monitor.start_link(@config, adapter: @adapter)
-    conn           = Monitor.get_conn(monitor)
+
+    conn = Monitor.get_conn(monitor)
+    assert ^conn = Monitor.get_conn(monitor)
 
     log = capture_log fn ->
       @adapter.disconnect(conn)
-      assert_receive {:EXIT, ^monitor, :normal}
     end
-
     assert Regex.match?(~r/:connection_down/, log)
+
+    assert_receive {:EXIT, ^monitor, {:connection_down, :normal}}
+    assert_receive {:EXIT, ^monitor, {:connection_down, :normal}}
   end
 end

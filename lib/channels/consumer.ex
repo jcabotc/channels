@@ -1,6 +1,116 @@
 defmodule Channels.Consumer do
+  @moduledoc """
+  This module specifies the `Channels.Consumer` behaviour.
+
+  A consumer is a `GenServer` meant to receive messages from
+  an AMQP broker.
+
+  A default implementation and some response helpers (ack, reject, ...)
+  are provided with the __using__ macro.
+
+  The following example shows how it works.
+
+    defmodule MyConsumer do
+      use Channels.Consumer
+
+      def start_link(handler, config) do
+        Channels.Consumer.start_link(__MODULE__, handler, config)
+      end
+
+      def init(handler) do
+        {:ok, %{handler: handler}}
+      end
+
+      def handle_ready(_meta, %{handler: handler} = state) do
+        handler.start
+        {:noreply, state}
+      end
+
+      def handle_message(payload, meta, %{handler: handler} = state) do
+        case handler.handle(payload) do
+          :ok ->
+            {:reply, :ack, state}
+
+          :ack_in_1_second ->
+            spawn fn ->
+              :timer.sleep(1000)
+              Channels.Consumer.ack(meta)
+            end
+            {:noreply, state}
+
+          :error ->
+            {:reply, :reject, state}
+
+          {:fatal, reason} ->
+            Channels.Consumer.reject(meta)
+            {:stop, reason, state}
+        end
+      end
+
+      def terminate(meta, %{handler: handler}) do
+        handler.stop
+      end
+    end
+  """
+
+  @type state :: term
+  @type reason :: term
+  @type meta :: map
+  @type payload :: binary
+  @type action :: :ack | :nack | :reject
+
+  @doc """
+  Called when the consumer is connected to the broker.
+
+  If returns `{:ok, state}` the consumer starts waiting for messages.
+  If returns `{:stop, reason}` the consumer is stopped with that reason
+  without running `terminate/2`
+  """
+  @callback init(initial :: term) ::
+              {:ok, state} |
+              {:stop, reason}
+
+  @doc """
+  Called when the broker informs that the consumer is subscribed as
+  a consumer and is ready to start processing messages.
+
+  If returns `{:noreply, state}` the consumer continues normally.
+  If returns `{:stop, reason, state}` the consumer runs terminate/2 and
+  then stops with the given reason.
+  """
+  @callback handle_ready(meta, state) ::
+              {:noreply, state} |
+              {:stop, reason, state}
+
+  @doc """
+  Called when a message is received from the broker.
+
+  If returns `{:noreply, state}` the consumer continues normally without
+  responding the broker (Is expected to ack, nack or reject using the
+  provided functions (`ack/1`, `nack/1` and `reject/1`) that expect the
+  meta argument.
+  If returns `{:reply, action, state}` where action is `:ack`, `:nack` or
+  `:reject` responds to the broker with the given action. If some opts
+  have to be provided to the adapter (like `requeue: false`)
+  `{:noreply, {action, opts}, state} can also be returned.
+  If returns {:stop, reason, state} the consumer runs terminate/2 and
+  then stops with the given reason.
+  """
+  @callback handle_message(payload, meta, state) ::
+              {:noreply, state} |
+              {:reply, action, state} |
+              {:reply, {action, opts :: Keyword.t}, state} |
+              {:stop, reason, state}
+
+  @doc """
+  Called when the consumer exits.
+  """
+  @callback terminate(meta, state) :: term
+
   defmacro __using__(_opts \\ []) do
     quote do
+      @behaviour Channels.Consumer
+
       def init(initial),
         do: {:ok, initial}
 
@@ -22,8 +132,22 @@ defmodule Channels.Consumer do
   @adapter Channels.Config.adapter
   @chan_provider FakeProvider
 
+  @type callback_mod :: module
+  @type initial :: term
+  @type config :: Keyword.t
+  @type opts :: [GenServer.options | {:adapter, Adapter.t} | {:chan_provider, module}]
+
+  @doc """
+  Starts a new consumer server with the given configuration.
+
+    * `callback_mod` - The module that implements de behaviour.
+    * `initial` - The state that will be given to the init/2 callback.
+    * `config` - The configuration of the consumer.
+    * `opts` - `GenServer` options.
+  """
+  @spec start_link(callback_mod, initial, config, opts) :: GenServer.on_start
   def start_link(mod, initial, config, opts \\ []) do
-    {adapter, opts} = Keyword.pop(opts, :adapter, @adapter)
+    {adapter, opts}  = Keyword.pop(opts, :adapter, @adapter)
     {provider, opts} = Keyword.pop(opts, :chan_provider, @chan_provider)
 
     args = {mod, adapter, provider, config, initial}

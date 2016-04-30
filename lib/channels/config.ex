@@ -50,8 +50,17 @@ defmodule Channels.ConnectionMissingError do
 end
 
 defmodule Channels.Config do
+  @moduledoc """
+  This module provides functions to access the Mix configuration.
+  """
+
   @config Application.get_all_env(:channels)
 
+  alias Channels.Adapter
+  @type config :: Keyword.t
+
+  @doc "Configured AMQP adapter."
+  @spec adapter(config) :: Adapter.t | no_return
   def adapter(config \\ @config) do
     case Keyword.fetch(config, :adapter) do
       {:ok, adapter} -> adapter
@@ -59,11 +68,14 @@ defmodule Channels.Config do
     end
   end
 
-  @default_conn_name :__channels_default_connection__
-  @default_conn_config []
+  @default_config []
 
-  def default_conn_name, do: @default_conn_name
+  @type conn_name    :: atom
+  @type conn_config  :: Keyword.t
+  @type conn_configs :: [{conn_name, conn_config}]
 
+  @doc "Configured connections"
+  @spec conn_configs(config) :: conn_configs | no_return
   def conn_configs(config \\ @config) do
     case Keyword.fetch(config, :connections) do
       {:ok, names} ->
@@ -76,7 +88,7 @@ defmodule Channels.Config do
   defp get_conn_config(config, name) do
     case Keyword.fetch(config, name) do
       {:ok, conn_config} -> conn_config
-      :error             -> []
+      :error             -> @default_config
     end
   end
 end
