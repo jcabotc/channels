@@ -9,7 +9,7 @@ defmodule Channels.ConfigTest do
   end
 
   test "adapter/1 when adapter missing" do
-    assert_raise Channels.AdapterMissingError, fn ->
+    assert_raise Config.AdapterMissingError, fn ->
       Config.adapter([])
     end
   end
@@ -30,7 +30,7 @@ defmodule Channels.ConfigTest do
   end
 
   test "conn_configs/1 when connections missing" do
-    assert_raise Channels.ConnectionMissingError, fn ->
+    assert_raise Config.ConnectionMissingError, fn ->
       Config.conn_configs([])
     end
   end
