@@ -20,7 +20,8 @@ defmodule Channels.Adapter do
   @type meta        :: %{}
   @type routing_key :: binary
 
-  # Connection
+  # Connection and channels
+  #
   @doc "Starts an AMQP connection with the given config"
   @callback connect(config) ::
               {:ok, conn} | {:error, reason :: term}
@@ -31,7 +32,6 @@ defmodule Channels.Adapter do
   @doc "Closes an AMQP connection with the given config"
   @callback disconnect(conn) :: :ok
 
-  # Channels
   @doc "Start a channel on the given connection"
   @callback open_channel(conn) ::
               {:ok, chan} | {:error, reason :: term}
@@ -40,6 +40,7 @@ defmodule Channels.Adapter do
   @callback close_channel(chan) :: :ok
 
   # Declarations
+  #
   @doc "Declares an exchange"
   @callback declare_exchange(chan, exchange, type, opts) ::
               :ok | {:error, reason :: term}
@@ -48,7 +49,8 @@ defmodule Channels.Adapter do
   @callback declare_queue(chan, queue, opts) ::
               {:ok, queue_info :: term} | {:error, reason :: term}
 
-  # Subscribe
+  # Subscription
+  #
   @doc "Bind a queue to an exchange"
   @callback bind(chan, queue, exchange, opts) :: :ok
 
@@ -64,6 +66,7 @@ defmodule Channels.Adapter do
               :unknown
 
   # Acknowledgement
+  #
   @doc "Ack a message"
   @callback ack(chan, meta, opts) :: :ok
 
@@ -74,6 +77,7 @@ defmodule Channels.Adapter do
   @callback reject(chan, meta, opts) :: :ok
 
   # Publication
+  #
   @doc "Publish a message"
   @callback publish(chan, exchange, payload, routing_key, opts) :: :ok
 end
