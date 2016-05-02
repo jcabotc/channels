@@ -23,6 +23,6 @@ defmodule Channels.Context do
   As result it returns a map with a key providing optional
   information about the actions it took.
   """
-  @callback setup(adapter, spec) ::
+  @callback setup(spec, adapter) ::
               :ok | {:error, reason :: term}
 end

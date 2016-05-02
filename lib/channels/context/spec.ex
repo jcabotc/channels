@@ -56,7 +56,7 @@ defmodule Channels.Context.Spec do
   @spec conn_name(t) :: {:ok, name :: atom} | {:error, reason :: term}
   def conn_name(%Spec{spec: spec}) do
     case Keyword.fetch(spec, :connection) do
-      {:ok, conn_name} when is_atom(conn_name) ->
+      {:ok, conn_name} ->
         {:ok, conn_name}
       :error ->
         {:error, {:missing_config, "connection name (atom) is not present"}}
