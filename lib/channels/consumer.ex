@@ -211,11 +211,11 @@ defmodule Channels.Consumer do
   end
 
   @adapter Channels.Config.adapter
-  @chan_provider FakeProvider
+  @context Channels.Consumer.Context
 
   @type initial :: term
   @type config :: Keyword.t
-  @type opts :: [GenServer.options | {:adapter, Adapter.t} | {:chan_provider, module}]
+  @type opts :: [GenServer.options | {:adapter, Adapter.t} | {:context, module}]
 
   @doc """
   Starts a new consumer server with the given configuration.
@@ -227,10 +227,10 @@ defmodule Channels.Consumer do
   """
   @spec start_link(module, initial, config, opts) :: GenServer.on_start
   def start_link(mod, initial, config, opts \\ []) do
-    {adapter, opts}  = Keyword.pop(opts, :adapter, @adapter)
-    {provider, opts} = Keyword.pop(opts, :chan_provider, @chan_provider)
+    {adapter, opts} = Keyword.pop(opts, :adapter, @adapter)
+    {context, opts} = Keyword.pop(opts, :context, @context)
 
-    args = {mod, adapter, provider, config, initial}
+    args = {adapter, context, config, mod, initial}
     GenServer.start_link(__MODULE__, args, opts)
   end
 
@@ -270,9 +270,17 @@ defmodule Channels.Consumer do
 
   use GenServer
 
-  def init({mod, adapter, provider, config, initial}) do
-    chan = provider.setup(config)
+  def init({adapter, context, config, mod, initial}) do
+    case context.setup(config, adapter) do
+      {:ok, %{chan: chan}} ->
+        mod_init(chan, adapter, mod, initial)
 
+      {:error, reason} ->
+        {:stop, reason}
+    end
+  end
+
+  defp mod_init(chan, adapter, mod, initial) do
     case mod.init(initial) do
       {:ok, given} ->
         {:ok, %{chan: chan, mod: mod, adapter: adapter, given: given}}

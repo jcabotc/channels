@@ -36,13 +36,13 @@ defmodule Channels.ConsumerTest do
       do: send(pid, {:terminate, meta})
   end
 
-  defmodule TestChanProvider do
-    def setup(%{test_pid: test_pid, adapter: adapter}) do
+  defmodule TestContext do
+    def setup([test_pid: test_pid], adapter) do
       {:ok, conn} = adapter.connect(:fake_config)
       {:ok, chan} = adapter.open_channel(conn)
 
-      send(test_pid, {:provided, conn, chan})
-      chan
+      send(test_pid, {:context_setup, chan})
+      {:ok, %{chan: chan}}
     end
   end
 
@@ -51,12 +51,12 @@ defmodule Channels.ConsumerTest do
   test "consumers properly" do
     test_pid = self
 
-    config = %{test_pid: test_pid, adapter: @adapter}
-    opts   = [chan_provider: TestChanProvider]
+    config = [test_pid: test_pid]
+    opts   = [adapter: @adapter, context: TestContext]
 
     {:ok, consumer} = TestConsumer.start_link(test_pid, config, opts)
 
-    assert_receive {:provided, _conn, chan}
+    assert_receive {:context_setup, chan}
 
     meta = %{chan: chan, adapter: @adapter}
 
