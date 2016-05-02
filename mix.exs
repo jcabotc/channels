@@ -16,6 +16,6 @@ defmodule Channels.Mixfile do
   end
 
   defp deps do
-    [{:amqp, "0.1.4", only: :test}]
+    [{:amqp, "0.1.4", only: [:dev, :test]}]
   end
 end
