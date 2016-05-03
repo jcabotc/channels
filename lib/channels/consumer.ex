@@ -227,11 +227,28 @@ defmodule Channels.Consumer do
   """
   @spec start_link(module, initial, config, opts) :: GenServer.on_start
   def start_link(mod, initial, config, opts \\ []) do
+    {args, opts} = build_args(mod, initial, config, opts)
+
+    GenServer.start_link(__MODULE__, args, opts)
+  end
+
+  @doc """
+  Starts a new consumer without links (outside of a supervison tree).
+
+  See `start_link\4` for more information.
+  """
+  @spec start(module, initial, config, opts) :: GenServer.on_start
+  def start(mod, initial, config, opts \\ []) do
+    {args, opts} = build_args(mod, initial, config, opts)
+
+    GenServer.start(__MODULE__, args, opts)
+  end
+
+  defp build_args(mod, initial, config, opts) do
     {adapter, opts} = Keyword.pop(opts, :adapter, @adapter)
     {context, opts} = Keyword.pop(opts, :context, @context)
 
-    args = {adapter, context, config, mod, initial}
-    GenServer.start_link(__MODULE__, args, opts)
+    {{adapter, context, config, mod, initial}, opts}
   end
 
   @doc """
