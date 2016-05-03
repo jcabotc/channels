@@ -91,9 +91,7 @@ defmodule Channels.Consumer do
   If returns `{:stop, reason}` the consumer is stopped with that reason
   without running `terminate/2`
   """
-  @callback init(initial :: term) ::
-              {:ok, state} |
-              {:stop, reason}
+  @callback init(initial :: term) :: Init.return_values
 
   @doc """
   Called when the broker informs that the consumer is subscribed as
@@ -103,9 +101,7 @@ defmodule Channels.Consumer do
   If returns `{:stop, reason, state}` the consumer runs terminate/2 and
   then stops with the given reason.
   """
-  @callback handle_ready(meta, state) ::
-              {:noreply, state} |
-              {:stop, reason, state}
+  @callback handle_ready(meta, state) :: Ready.return_values
 
   @doc """
   Called when a message is received from the broker.
@@ -121,37 +117,12 @@ defmodule Channels.Consumer do
   If returns {:stop, reason, state} the consumer runs terminate/2 and
   then stops with the given reason.
   """
-  @callback handle_message(payload, meta, state) ::
-              {:noreply, state} |
-              {:reply, action, state} |
-              {:reply, {action, opts :: Keyword.t}, state} |
-              {:stop, reason, state}
+  @callback handle_message(payload, meta, state) :: Deliver.return_values
 
   @doc """
   Called when the consumer exits.
   """
   @callback terminate(meta, state) :: term
-
-  @doc """
-  Called when a message is received from the broker.
-
-  If returns `{:noreply, state}` the consumer continues normally without
-  responding the broker (Is expected to ack, nack or reject using the
-  provided functions (`ack/1`, `nack/1` and `reject/1`) that expect the
-  meta argument.
-  If returns `{:reply, action, state}` where action is `:ack`, `:nack` or
-  `:reject` responds to the broker with the given action. If some opts
-  have to be provided to the adapter (like `requeue: false`)
-  `{:noreply, {action, opts}, state} can also be returned.
-  If returns {:stop, reason, state} the consumer runs terminate/2 and
-  then stops with the given reason.
-  """
-  @callback handle_message(payload, meta, state) ::
-              {:noreply, state} |
-              {:reply, action, state} |
-              {:reply, {action, opts :: Keyword.t}, state} |
-              {:stop, reason, state}
-
 
   @doc """
   Invoked to change the state of the `Channels.Consumer` when a different version
@@ -287,6 +258,8 @@ defmodule Channels.Consumer do
 
   use GenServer
 
+  alias Channels.Consumer.Handler.{Init, Ready, Deliver}
+
   def init({adapter, context, config, mod, initial}) do
     case context.setup(config, adapter) do
       {:ok, %{chan: chan}} ->
@@ -298,13 +271,10 @@ defmodule Channels.Consumer do
   end
 
   defp mod_init(chan, adapter, mod, initial) do
-    case mod.init(initial) do
-      {:ok, given} ->
-        {:ok, %{chan: chan, mod: mod, adapter: adapter, given: given}}
+    state = %{chan: chan, mod: mod, adapter: adapter, given: initial}
 
-      {:stop, reason} ->
-        {:stop, reason}
-    end
+    mod.init(initial)
+    |> Init.handle(state)
   end
 
   def handle_info(message, %{adapter: adapter} = state) do
@@ -326,34 +296,16 @@ defmodule Channels.Consumer do
   defp ready(raw_meta, state) do
     {meta, mod, given} = prepare(raw_meta, state)
 
-    case mod.handle_ready(meta, given) do
-      {:noreply, new_given} ->
-        {:noreply, %{state | given: new_given}}
-
-      {:stop, reason, new_given} ->
-        {:stop, reason, %{state | given: new_given}}
-    end
+    mod.handle_ready(meta, given)
+    |> Ready.handle(state)
   end
 
   @actions [:ack, :nack, :reject]
   defp deliver(payload, raw_meta, state) do
     {meta, mod, given} = prepare(raw_meta, state)
 
-    case mod.handle_message(payload, meta, given) do
-      {:noreply, new_given} ->
-        {:noreply, %{state | given: new_given}}
-
-      {:reply, action, new_given} when action in @actions ->
-        apply(__MODULE__, action, [meta])
-        {:noreply, %{state | given: new_given}}
-
-      {:reply, {action, opts}, new_given} when action in @actions ->
-        apply(__MODULE__, action, [meta, opts])
-        {:noreply, %{state | given: new_given}}
-
-      {:stop, reason, new_given} ->
-        {:stop, reason, %{state | given: new_given}}
-    end
+    mod.handle_message(payload, meta, given)
+    |> Deliver.handle(state, meta)
   end
 
   defp cancel(raw_meta, state) do
