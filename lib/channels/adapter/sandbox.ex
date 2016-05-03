@@ -89,16 +89,16 @@ defmodule Channels.Adapter.Sandbox do
     get(chan_pid) |> Enum.reverse
   end
 
-  def send_ready(pid, meta) do
-    send(pid, {:ready, meta})
+  def send_ready(pid, raw_meta) do
+    send(pid, {:ready, raw_meta})
   end
 
-  def send_deliver(pid, payload, meta) do
-    send(pid, {:deliver, payload, meta})
+  def send_deliver(pid, payload, raw_meta) do
+    send(pid, {:deliver, payload, raw_meta})
   end
 
-  def send_cancel(pid, meta) do
-    send(pid, {:cancel, meta})
+  def send_cancel(pid, raw_meta) do
+    send(pid, {:cancel, raw_meta})
   end
 
   defp new(),             do: elem(Agent.start_link(fn -> [] end), 1)

@@ -12,8 +12,8 @@ defmodule Channels.MonitorTest do
 
     {:ok, monitor} = Monitor.start_link(@config, adapter: @adapter)
 
-    conn = Monitor.get_conn(monitor)
-    assert ^conn = Monitor.get_conn(monitor)
+    {:ok, conn} = Monitor.get_conn(monitor)
+    assert {:ok, ^conn} = Monitor.get_conn(monitor)
 
     log = capture_log fn ->
       @adapter.disconnect(conn)
