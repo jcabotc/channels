@@ -6,7 +6,7 @@ An application to manage AMQP consumers and publishers.
 
 You can use channels in your projects in two steps:
 
-1. Add plug and your adapter of choice (currently amqp) to your `mix.exs` dependencies:
+1. Add channels and your adapter of choice (currently amqp) to your `mix.exs` dependencies:
 
     ```elixir
     def deps do
