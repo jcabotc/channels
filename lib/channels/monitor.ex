@@ -57,17 +57,14 @@ defmodule Channels.Monitor do
     {:stop, reason, state}
   end
 
-  def handle_info(_anything, state) do
-    {:noreply, state}
-  end
+  def handle_info(_anything, state),
+    do: {:noreply, state}
 
-  def terminate({:connection_down, _reason}, _state) do
-    :ok
-  end
+  def terminate({:connection_down, _reason}, _state),
+    do: :ok
 
-  def terminate(_any_reason, %{adapter: adapter, conn: conn}) do
-    adapter.disconnect(conn)
-  end
+  def terminate(_any_reason, %{adapter: adapter, conn: conn}),
+    do: adapter.disconnect(conn)
 
   defp build_state(adapter, conn) do
     ref = adapter.monitor(conn)
