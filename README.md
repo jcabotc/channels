@@ -170,5 +170,5 @@ We are starting a task that performs the message handling, and providing the tas
 
 ## License
 
-Plug source code is released under Apache 2 License.
+Channels source code is released under Apache 2 License.
 Check LICENSE file for more information.
