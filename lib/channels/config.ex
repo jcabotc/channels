@@ -8,12 +8,14 @@ defmodule Channels.Config do
   alias Channels.Adapter
   @type config :: Keyword.t
 
+  @default_adapter Channels.Adapter.AMQP
+
   @doc "Configured AMQP adapter."
   @spec adapter(config) :: Adapter.t | no_return
   def adapter(config \\ @config) do
     case Keyword.fetch(config, :adapter) do
       {:ok, adapter} -> adapter
-      :error         -> raise Channels.Config.AdapterMissingError
+      :error         -> @default_adapter
     end
   end
 

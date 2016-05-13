@@ -8,10 +8,10 @@ defmodule Channels.ConfigTest do
     assert FakeAdapter == Config.adapter(config)
   end
 
+  @default_adapter Channels.Adapter.AMQP
+
   test "adapter/1 when adapter missing" do
-    assert_raise Config.AdapterMissingError, fn ->
-      Config.adapter([])
-    end
+    assert @default_adapter == Config.adapter([])
   end
 
   test "conn_configs/1" do
