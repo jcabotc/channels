@@ -1,8 +1,15 @@
 defmodule Channels.Adapter.Sandbox do
   @behaviour Channels.Adapter
 
-  defmodule Conn, do: defstruct [:config, :pid]
-  defmodule Chan, do: defstruct [:conn, :pid]
+  defmodule Conn do
+    @moduledoc false
+    defstruct [:config, :pid]
+  end
+
+  defmodule Chan do
+    @moduledoc false
+    defstruct [:conn, :pid]
+  end
 
   def connect(config) do
     {:ok, %Conn{config: config, pid: new}}
