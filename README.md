@@ -140,8 +140,8 @@ For such cases the `Channels.Consumer` module provides the functions `ack/1`, `n
 defmodule MyProcessor do
   def process(message, on_success, on_failure) do
     case do_process(message) do
-      :success -> on_success.()
-      :failure -> on_failure.()
+      :ok    -> on_success.()
+      :error -> on_failure.()
     end
   end
 
