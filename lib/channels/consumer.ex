@@ -260,6 +260,7 @@ defmodule Channels.Consumer do
 
   alias Channels.Consumer.Handler.{Init, Ready, Deliver}
 
+  @doc false
   def init({adapter, context, config, mod, initial}) do
     case context.setup(config, adapter) do
       {:ok, %{chan: chan}} ->
@@ -277,6 +278,7 @@ defmodule Channels.Consumer do
     |> Init.handle(state)
   end
 
+  @doc false
   def handle_info(message, %{adapter: adapter} = state) do
     case adapter.handle(message) do
       {:ready, raw_meta} ->
