@@ -1,0 +1,732 @@
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.11.5">
+    <title>Channels.Adapter – channels v0.0.1</title>
+    <link rel="stylesheet" href="dist/app-ddd9717ad9.css" />
+    
+      <link rel="canonical" href="https://hexdocs.pm/channels/Channels.Adapter.html" />
+    
+    <script src="dist/sidebar_items.js"></script>
+  </head>
+  <body data-type="modules">
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <i class="icon-menu"></i>
+</button>
+<section class="sidebar">
+  <button class="sidebar-toggle">
+    <i class="icon-menu"></i>
+  </button>
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        channels
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.0.1
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <i class="icon-search"></i>
+    <input type="text" class="sidebar-searchInput" placeholder="search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+  </ul>
+
+  <ul id="full-list" class="sidebar-fullList"></ul>
+  <div class="sidebar-noResults"></div>
+</section>
+
+<section class="content">
+  <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs">channels v0.0.1</small>
+        Channels.Adapter
+        
+          <small>behaviour</small>
+        
+        
+      </h1>
+
+      
+        <section id="moduledoc" class="docstring">
+          <p>This module specifies the adapter API that an AMQP adapter is
+required to implement.</p>
+
+        </section>
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <i class="icon-link"></i>
+            </a>
+            Summary
+          </h1>
+          
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:chan/0">chan()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:config/0">config()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:conn/0">conn()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:exchange/0">exchange()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:meta/0">meta()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:opts/0">opts()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:payload/0">payload()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:queue/0">queue()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:routing_key/0">routing_key()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:t/0">t()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:type/0">type()</a>
+  </div>
+  
+</div>
+
+  </div>
+
+
+          
+
+          
+
+          
+  <div class="summary-callbacks summary">
+    <h2>
+      <a href="#callbacks">Callbacks</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:ack/3">ack(chan, meta, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Ack a message</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:bind/4">bind(chan, queue, exchange, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Bind a queue to an exchange</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:close_channel/1">close_channel(chan)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Close a channel</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:connect/1">connect(config)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Starts an AMQP connection with the given config</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:consume/4">consume(chan, queue, pid, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Subscribe the given pid to a queue and receive messages</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:declare_exchange/4">declare_exchange(chan, exchange, type, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Declares an exchange</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:declare_queue/3">declare_queue(chan, queue, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Declares a queue</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:disconnect/1">disconnect(conn)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Closes an AMQP connection with the given config</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:handle/1">handle(message)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Transform the given message to the expected format</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:monitor/1">monitor(conn)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Monitors the given AMQP connection</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:nack/3">nack(chan, meta, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Nack a message</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:open_channel/1">open_channel(conn)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Start a channel on the given connection</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:publish/5">publish(chan, exchange, payload, routing_key, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Publish a message</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:reject/3">reject(chan, meta, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Reject a message</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+        </section>
+      
+
+      
+        <section id="types" class="types details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <i class="icon-link"></i>
+            </a>
+            Types
+          </h1>
+          <div class="types-list">
+            <div id="t:chan/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:chan/0">chan</a> :: term</code></pre>
+  
+</div>
+<div id="t:config/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:config/0">config</a> :: <a href="http://elixir-lang.org/docs/stable/elixir/Keyword.html#t:t/0">Keyword.t</a></code></pre>
+  
+</div>
+<div id="t:conn/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:conn/0">conn</a> :: term</code></pre>
+  
+</div>
+<div id="t:exchange/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:exchange/0">exchange</a> :: binary</code></pre>
+  
+</div>
+<div id="t:meta/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:meta/0">meta</a> :: %{}</code></pre>
+  
+</div>
+<div id="t:opts/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:opts/0">opts</a> :: <a href="http://elixir-lang.org/docs/stable/elixir/Keyword.html#t:t/0">Keyword.t</a></code></pre>
+  
+</div>
+<div id="t:payload/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:payload/0">payload</a> :: binary</code></pre>
+  
+</div>
+<div id="t:queue/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:queue/0">queue</a> :: binary</code></pre>
+  
+</div>
+<div id="t:routing_key/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:routing_key/0">routing_key</a> :: binary</code></pre>
+  
+</div>
+<div id="t:t/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:t/0">t</a> :: module</code></pre>
+  
+</div>
+<div id="t:type/0" class="type-detail">
+  <pre><code class="elixir"><a href="#t:type/0">type</a> :: :direct | :topic | :fanout</code></pre>
+  
+</div>
+
+          </div>
+        </section>
+      
+
+      
+
+      
+
+      
+        <section id="callbacks" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#callbacks">
+              <i class="icon-link"></i>
+            </a>
+            Callbacks
+          </h1>
+          <div class="detail" id="c:ack/3">
+  <div class="detail-header">
+    <a href="#c:ack/3" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">ack(chan, meta, opts)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">ack(<a href="#t:chan/0">chan</a>, <a href="#t:meta/0">meta</a>, <a href="#t:opts/0">opts</a>) :: :ok</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Ack a message</p>
+
+  </section>
+</div>
+<div class="detail" id="c:bind/4">
+  <div class="detail-header">
+    <a href="#c:bind/4" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">bind(chan, queue, exchange, opts)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">bind(<a href="#t:chan/0">chan</a>, <a href="#t:queue/0">queue</a>, <a href="#t:exchange/0">exchange</a>, <a href="#t:opts/0">opts</a>) :: :ok</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Bind a queue to an exchange</p>
+
+  </section>
+</div>
+<div class="detail" id="c:close_channel/1">
+  <div class="detail-header">
+    <a href="#c:close_channel/1" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">close_channel(chan)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">close_channel(<a href="#t:chan/0">chan</a>) :: :ok</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Close a channel</p>
+
+  </section>
+</div>
+<div class="detail" id="c:connect/1">
+  <div class="detail-header">
+    <a href="#c:connect/1" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">connect(config)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">connect(<a href="#t:config/0">config</a>) ::
+  {:ok, <a href="#t:conn/0">conn</a>} |
+  {:error, reason :: term}</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Starts an AMQP connection with the given config</p>
+
+  </section>
+</div>
+<div class="detail" id="c:consume/4">
+  <div class="detail-header">
+    <a href="#c:consume/4" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">consume(chan, queue, pid, opts)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">consume(<a href="#t:chan/0">chan</a>, <a href="#t:queue/0">queue</a>, pid, <a href="#t:opts/0">opts</a>) :: {:ok, consumer_tag :: binary}</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Subscribe the given pid to a queue and receive messages</p>
+
+  </section>
+</div>
+<div class="detail" id="c:declare_exchange/4">
+  <div class="detail-header">
+    <a href="#c:declare_exchange/4" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">declare_exchange(chan, exchange, type, opts)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">declare_exchange(<a href="#t:chan/0">chan</a>, <a href="#t:exchange/0">exchange</a>, <a href="#t:type/0">type</a>, <a href="#t:opts/0">opts</a>) ::
+  :ok |
+  {:error, reason :: term}</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Declares an exchange</p>
+
+  </section>
+</div>
+<div class="detail" id="c:declare_queue/3">
+  <div class="detail-header">
+    <a href="#c:declare_queue/3" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">declare_queue(chan, queue, opts)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">declare_queue(<a href="#t:chan/0">chan</a>, <a href="#t:queue/0">queue</a>, <a href="#t:opts/0">opts</a>) ::
+  {:ok, queue_info :: term} |
+  {:error, reason :: term}</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Declares a queue</p>
+
+  </section>
+</div>
+<div class="detail" id="c:disconnect/1">
+  <div class="detail-header">
+    <a href="#c:disconnect/1" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">disconnect(conn)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">disconnect(<a href="#t:conn/0">conn</a>) :: :ok</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Closes an AMQP connection with the given config</p>
+
+  </section>
+</div>
+<div class="detail" id="c:handle/1">
+  <div class="detail-header">
+    <a href="#c:handle/1" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">handle(message)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">handle(message :: term) ::
+  {:ready, <a href="#t:meta/0">meta</a>} |
+  {:deliver, <a href="#t:payload/0">payload</a>, <a href="#t:meta/0">meta</a>} |
+  {:cancel, <a href="#t:meta/0">meta</a>} |
+  :unknown</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Transform the given message to the expected format</p>
+
+  </section>
+</div>
+<div class="detail" id="c:monitor/1">
+  <div class="detail-header">
+    <a href="#c:monitor/1" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">monitor(conn)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">monitor(<a href="#t:conn/0">conn</a>) :: reference</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Monitors the given AMQP connection</p>
+
+  </section>
+</div>
+<div class="detail" id="c:nack/3">
+  <div class="detail-header">
+    <a href="#c:nack/3" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">nack(chan, meta, opts)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">nack(<a href="#t:chan/0">chan</a>, <a href="#t:meta/0">meta</a>, <a href="#t:opts/0">opts</a>) :: :ok</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Nack a message</p>
+
+  </section>
+</div>
+<div class="detail" id="c:open_channel/1">
+  <div class="detail-header">
+    <a href="#c:open_channel/1" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">open_channel(conn)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">open_channel(<a href="#t:conn/0">conn</a>) ::
+  {:ok, <a href="#t:chan/0">chan</a>} |
+  {:error, reason :: term}</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Start a channel on the given connection</p>
+
+  </section>
+</div>
+<div class="detail" id="c:publish/5">
+  <div class="detail-header">
+    <a href="#c:publish/5" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">publish(chan, exchange, payload, routing_key, opts)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">publish(<a href="#t:chan/0">chan</a>, <a href="#t:exchange/0">exchange</a>, <a href="#t:payload/0">payload</a>, <a href="#t:routing_key/0">routing_key</a>, <a href="#t:opts/0">opts</a>) :: :ok</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Publish a message</p>
+
+  </section>
+</div>
+<div class="detail" id="c:reject/3">
+  <div class="detail-header">
+    <a href="#c:reject/3" class="detail-link" title="Link to this callback">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">reject(chan, meta, opts)</span>
+      
+  </div>
+  
+    <div class="specs">
+      <h4 class="specs-title">Specs</h4>
+      <div class="specs-list">
+        
+          <pre><code class="elixir">reject(<a href="#t:chan/0">chan</a>, <a href="#t:meta/0">meta</a>, <a href="#t:opts/0">opts</a>) :: :ok</code></pre>
+        
+      </div>
+    </div>
+  
+  <section class="docstring">
+    <p>Reject a message</p>
+
+  </section>
+</div>
+
+        </section>
+      
+        <footer class="footer">
+      <p>
+        <span class="line">
+          Built using
+          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.11.5),
+        </span>
+        <span class="line">
+          designed by
+          <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+          </span>
+      </p>
+      <button class="night-mode-toggle" />
+    </footer>
+  </div>
+</section>
+</div>
+  <script src="dist/app-918614602f.js"></script>
+  </body>
+</html>
+

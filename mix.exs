@@ -9,7 +9,8 @@ defmodule Channels.Mixfile do
      package: package,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps,
+     docs: [extras: ["README.md"]]]
   end
 
   def application do
@@ -18,7 +19,9 @@ defmodule Channels.Mixfile do
   end
 
   defp deps do
-    [{:amqp, "0.1.4", only: [:dev, :test]}]
+    [{:amqp, "0.1.4", only: [:dev, :test]},
+     {:earmark, "~> 0.1", only: :dev},
+     {:ex_doc, "~> 0.11", only: :dev}]
   end
 
   defp package do

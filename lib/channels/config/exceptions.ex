@@ -1,4 +1,6 @@
 defmodule Channels.Config.ConnectionMissingError do
+  @moduledoc false
+
   defexception message: """
   Connections not defined.
   To define a connection named :my_conn add to your config:
