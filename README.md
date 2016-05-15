@@ -161,7 +161,7 @@ defmodule MyConsumer do
 end
 ```
 
-In this example we are not acking or rejecting the message synchronously (we return `{:noreply, state}`. We are starting a task that performs the message handling, and providing the task some callbacks ack or reject the message by itself when the job is done.
+In this example we are not acking or rejecting the message synchronously (we return `{:noreply, state}`). We are starting a task that performs the message handling, and providing the task some callbacks ack or reject the message by itself when the job is done.
 
 ## License
 
