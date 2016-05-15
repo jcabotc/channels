@@ -2,6 +2,8 @@
 
 An application to manage AMQP consumers and publishers.
 
+[Documentation for ExPool is available online](http://hexdocs.pm/channels/).
+
 ## Installation
 
 You can use channels in your projects in two steps:
@@ -64,9 +66,9 @@ config = [
 
 On the example above, on the `start_link/1` call, the following steps are taking place:
 
-  1 - A GenServer is started.
-  2 - A new channel is opened using the specified connection (`:main_connection`).
-  3 - An exchange named my-exchange of type direct is being declared to the AMQP broker.
+  1. A GenServer is started.
+  2. A new channel is opened using the specified connection (`:main_connection`).
+  3. An exchange named my-exchange of type direct is being declared to the AMQP broker.
 
 After that we can send messages to the broker with the `publish/3`.
 
@@ -119,11 +121,11 @@ end
 
 On the example above, on the `start_link/2` call, the following steps are taking place:
 
-  1 - A GenServer is started.
-  2 - A new channel is opened using the specified connection (`:main_connection`).
-  3 - An exchange named my-exchange of type direct is being declared to the AMQP broker.
-  4 - A queue named my-queue is being declared to the AMQP broker.
-  5 - The queue is binded to the exchange with the given bind options
+  1. A GenServer is started.
+  2. A new channel is opened using the specified connection (`:main_connection`).
+  3. An exchange named my-exchange of type direct is being declared to the AMQP broker.
+  4. A queue named my-queue is being declared to the AMQP broker.
+  5. The queue is binded to the exchange with the given bind options
 
 After that messages sent to "my-queue" will be sent as messages to the consumer
 as callbacks to the `handle_message/3` function.

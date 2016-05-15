@@ -10,7 +10,7 @@ defmodule Channels.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps,
-     docs: [extras: ["README.md"]]]
+     docs: [extras: ["README.md"], main: "readme"]]
   end
 
   def application do
