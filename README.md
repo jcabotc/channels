@@ -10,20 +10,20 @@ You can use channels in your projects in two steps:
 
 1. Add channels and your adapter of choice (currently [amqp](https://github.com/pma/amqp)) to your `mix.exs` dependencies:
 
-    ```elixir
-    def deps do
-      [{:amqp, "0.1.4"},
-       {:channels, "~> 0.0.1"}]
-    end
-    ```
+```elixir
+def deps do
+  [{:amqp, "0.1.4"},
+   {:channels, "~> 0.0.1"}]
+end
+```
 
 2. List both `:amqp` and `:channels` as your application dependencies:
 
-    ```elixir
-    def application do
-      [applications: [:amqp, :channels]]
-    end
-    ```
+```elixir
+def application do
+  [applications: [:amqp, :channels]]
+end
+```
 
 ## Connections
 
