@@ -19,7 +19,7 @@ defmodule Channels.Mixfile do
   end
 
   defp deps do
-    [{:amqp, "0.1.4", only: [:dev, :test]},
+    [{:amqp, "0.1.4", optional: true},
      {:earmark, "~> 0.1", only: :dev},
      {:ex_doc, "~> 0.11", only: :dev}]
   end
