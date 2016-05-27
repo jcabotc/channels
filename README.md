@@ -2,26 +2,28 @@
 
 An application to manage AMQP consumers and publishers.
 
+[Documentation for Channels is available online](http://hexdocs.pm/channels/).
+
 ## Installation
 
 You can use channels in your projects in two steps:
 
-1. Add channels and your adapter of choice (currently amqp) to your `mix.exs` dependencies:
+1. Add channels and your adapter of choice (currently [amqp](https://github.com/pma/amqp)) to your `mix.exs` dependencies:
 
-    ```elixir
-    def deps do
-      [{:amqp, "0.1.4"},
-       {:channels, "~> 0.0.1"}]
-    end
-    ```
+```elixir
+def deps do
+  [{:amqp, "0.1.4"},
+   {:channels, "~> 0.0.2"}]
+end
+```
 
 2. List both `:amqp` and `:channels` as your application dependencies:
 
-    ```elixir
-    def application do
-      [applications: [:amqp, :channels]]
-    end
-    ```
+```elixir
+def application do
+  [applications: [:amqp, :channels]]
+end
+```
 
 ## Connections
 
@@ -40,7 +42,6 @@ On the example above we are configuring two connections named `:main_connection`
 and `:alt_connection`.
 
 The configuration for the `:main_connection` will be passed to the underlying adapter when connecting.
-
 The `:another_connection` does not have a custom configuration, an empty keyword list will be passed to the adapter.
 
 ## Publishing messages
@@ -64,13 +65,11 @@ config = [
 
 On the example above, on the `start_link/1` call, the following steps are taking place:
 
-  1 - A GenServer is started.
-  2 - A new channel is opened using the specified connection (`:main_connection`).
-  3 - An exchange named my-exchange of type direct is being declared to the AMQP broker.
+  1. A GenServer is started.
+  2. A new channel is opened using the specified connection (`:main_connection`).
+  3. An exchange named my-exchange of type direct is being declared to the AMQP broker.
 
-After that we can send messages to the broker with the `publish/3`.
-
-The routing key is optional and defaults to `""`.
+After that we can send messages to the broker with the `publish/3` (the routing key is optional and defaults to `""`).
 
 ## Consuming messages
 
@@ -119,20 +118,18 @@ end
 
 On the example above, on the `start_link/2` call, the following steps are taking place:
 
-  1 - A GenServer is started.
-  2 - A new channel is opened using the specified connection (`:main_connection`).
-  3 - An exchange named my-exchange of type direct is being declared to the AMQP broker.
-  4 - A queue named my-queue is being declared to the AMQP broker.
-  5 - The queue is binded to the exchange with the given bind options
+  1. A GenServer is started.
+  2. A new channel is opened using the specified connection (`:main_connection`).
+  3. An exchange named my-exchange of type direct is being declared to the AMQP broker.
+  4. A queue named my-queue is being declared to the AMQP broker.
+  5. The queue is binded to the exchange with the given bind options
 
 After that messages sent to "my-queue" will be sent as messages to the consumer
 as callbacks to the `handle_message/3` function.
 
 ### Asynchronous ack's
 
-In the example above we have shown how a consumer handles a message and inmediately ack's it using the `{:reply, :ack, state}` return value.
-
-Sometimes you do not want to ack or reject a message inmediately because another process is going to handle the message, and whether we respond with an ack or a reject depends on the result of the processing.
+In the example above we have shown how a consumer handles a message and inmediately acks it using the `{:reply, :ack, state}` return value, but sometimes you do not want to ack or reject a message inmediately because another process is going to handle the message, and whether we respond with an ack or a reject depends on the result of the processing.
 
 For such cases the `Channels.Consumer` module provides the functions `ack/1`, `nack/1` and `reject/1`.
 
@@ -164,9 +161,7 @@ defmodule MyConsumer do
 end
 ```
 
-In this example we are not acking or rejecting the message synchronously (we return `{:noreply, state}`.
-
-We are starting a task that performs the message handling, and providing the task some callbacks ack or reject the message by itself when the job is done.
+In this example we are not acking or rejecting the message synchronously (we return `{:noreply, state}`). We are starting a task that performs the message handling, and providing the task some callbacks ack or reject the message by itself when the job is done.
 
 ## License
 

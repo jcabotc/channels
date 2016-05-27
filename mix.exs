@@ -4,13 +4,13 @@ defmodule Channels.Mixfile do
   def project do
     [app: :channels,
      description: "An application to manage AMQP consumers and publishers.",
-     version: "0.0.1",
+     version: "0.0.2",
      elixir: "~> 1.2",
      package: package,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps,
-     docs: [extras: ["README.md"]]]
+     docs: [extras: ["README.md"], main: "readme"]]
   end
 
   def application do
@@ -19,7 +19,7 @@ defmodule Channels.Mixfile do
   end
 
   defp deps do
-    [{:amqp, "0.1.4", only: [:dev, :test]},
+    [{:amqp, "0.1.4", optional: true},
      {:earmark, "~> 0.1", only: :dev},
      {:ex_doc, "~> 0.11", only: :dev}]
   end
