@@ -91,6 +91,25 @@ defmodule Channels.Publisher do
     {{adapter, context, config}, opts}
   end
 
+  @doc """
+  Declares the exchangewithout starting a publisher.
+
+    * `config` - The configuration of the publisher.
+  """
+  def declare(config, opts \\ []) do
+    adapter = Keyword.get(opts, :adapter, @adapter)
+    context = Keyword.get(opts, :context, @context)
+
+    case context.setup(config, adapter) do
+      {:ok, %{chan: chan}} ->
+        adapter.close_channel(chan)
+        :ok
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
   @type payload     :: binary
   @type routing_key :: binary
   @type options     :: Keyword.t

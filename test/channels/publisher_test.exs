@@ -38,4 +38,17 @@ defmodule Channels.PublisherTest do
 
     assert Enum.any?(historic, &(&1 == expected_historic))
   end
+
+  test "declare/2" do
+    test_pid = self
+    exchange = "my_exchange"
+
+    config = [test_pid: test_pid, exchange: exchange]
+    opts   = [adapter: @adapter, context: TestContext]
+
+    assert :ok == Channels.Publisher.declare(config, opts)
+    assert_receive {:context_setup, chan}
+
+    refute Process.alive?(chan.pid)
+  end
 end

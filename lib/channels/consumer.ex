@@ -222,6 +222,12 @@ defmodule Channels.Consumer do
     {{adapter, context, config, mod, initial}, opts}
   end
 
+  @doc """
+  Declares the exchange and declares and binds the queue without starting
+  a consumer.
+
+    * `config` - The configuration of the consumer.
+  """
   def declare(config, opts \\ []) do
     adapter = Keyword.get(opts, :adapter, @adapter)
     context = Keyword.get(opts, :context, @context)
