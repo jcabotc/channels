@@ -222,6 +222,20 @@ defmodule Channels.Consumer do
     {{adapter, context, config, mod, initial}, opts}
   end
 
+  def declare(config, opts \\ []) do
+    adapter = Keyword.get(opts, :adapter, @adapter)
+    context = Keyword.get(opts, :context, @context)
+
+    case context.setup(config, adapter) do
+      {:ok, %{chan: chan}} ->
+        adapter.close_channel(chan)
+        :ok
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
   @doc """
   Sends an ack to the broker.
 
@@ -315,6 +329,11 @@ defmodule Channels.Consumer do
 
     mod.terminate(meta, given)
     {:stop, :broker_cancel, state}
+  end
+
+  @doc false
+  def terminate(_reason, %{chan: chan, adapter: adapter}) do
+    adapter.close_channel(chan)
   end
 
   defp prepare(raw_meta, %{chan: chan, mod: mod, adapter: adapter, given: given}) do

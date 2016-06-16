@@ -77,6 +77,8 @@ defmodule Channels.Integration.SimpleTest do
     Process.unlink(consumer)
     log = capture_log fn ->
       @adapter.send_cancel(consumer, %{})
+
+      :timer.sleep(10)
     end
     assert_receive {:terminate, _meta}
     assert Regex.match?(~r/:broker_cancel/, log)

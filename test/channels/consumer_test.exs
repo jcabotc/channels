@@ -78,8 +78,22 @@ defmodule Channels.ConsumerTest do
     log = capture_log fn ->
       @adapter.send_cancel(consumer, %{})
       assert_receive {:terminate, ^meta}
+
+      :timer.sleep(10)
     end
 
     assert Regex.match?(~r/:broker_cancel/, log)
+  end
+
+  test "declare/2" do
+    test_pid = self
+
+    config = [test_pid: test_pid]
+    opts   = [adapter: @adapter, context: TestContext]
+
+    assert :ok == Channels.Consumer.declare(config, opts)
+    assert_receive {:context_setup, chan}
+
+    refute Process.alive?(chan.pid)
   end
 end
