@@ -36,6 +36,7 @@ defmodule Channels.Integration.FailingConnectionTest do
 
     log = capture_log fn ->
       @adapter.disconnect(chan.conn)
+      :timer.sleep(10)
     end
     assert Regex.match?(~r/:connection_down/, log)
 

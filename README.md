@@ -13,7 +13,7 @@ You can use channels in your projects in two steps:
 ```elixir
 def deps do
   [{:amqp, "0.1.4"},
-   {:channels, "~> 0.0.2"}]
+   {:channels, "~> 0.0.3"}]
 end
 ```
 
