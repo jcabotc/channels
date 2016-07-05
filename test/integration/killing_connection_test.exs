@@ -38,7 +38,7 @@ defmodule Channels.Integration.FailingConnectionTest do
       @adapter.disconnect(chan.conn)
       :timer.sleep(10)
     end
-    assert Regex.match?(~r/:connection_down/, log)
+    assert Regex.match?(~r/Connection down/, log)
 
     @adapter.send_deliver(@consumer_name, payload, %{})
     assert_receive({:message, ^payload, %{chan: new_chan}})

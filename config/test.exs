@@ -1,4 +1,7 @@
 use Mix.Config
+#
+# config :logger,
+#   backends: []
 
 config :channels,
   adapter: Channels.Adapter.Sandbox,
