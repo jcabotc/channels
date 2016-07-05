@@ -12,15 +12,28 @@ defmodule Channels.MonitorTest do
 
     {:ok, monitor} = Monitor.start_link(@config, adapter: @adapter)
 
-    {:ok, conn} = Monitor.get_conn(monitor)
-    assert {:ok, ^conn} = Monitor.get_conn(monitor)
+    {:ok, conn_1} = Monitor.get_conn(monitor)
+    assert {:ok, ^conn_1} = Monitor.get_conn(monitor)
 
     log = capture_log fn ->
-      @adapter.disconnect(conn)
+      @adapter.disconnect(conn_1)
+      :timer.sleep(10)
     end
-    assert Regex.match?(~r/:connection_down/, log)
+    assert Regex.match?(~r/Connection down/, log)
+    assert Regex.match?(~r/Successfully reconnected/, log)
 
     assert_receive {:EXIT, ^monitor, {:connection_down, :normal}}
+    assert_receive {:EXIT, ^monitor, {:connection_down, :normal}}
+
+    {:ok, conn_2} = Monitor.get_conn(monitor)
+    assert conn_1 != conn_2
+    log = capture_log fn ->
+      @adapter.disconnect(conn_2)
+      :timer.sleep(10)
+    end
+    assert Regex.match?(~r/Connection down/, log)
+    assert Regex.match?(~r/Successfully reconnected/, log)
+
     assert_receive {:EXIT, ^monitor, {:connection_down, :normal}}
   end
 end

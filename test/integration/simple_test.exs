@@ -57,11 +57,11 @@ defmodule Channels.Integration.SimpleTest do
 
     content = "a_message"
     @adapter.send_deliver(consumer, "instant: #{content}", %{})
-    assert_receive {:instant, ^content, instant_meta}
+    assert_receive {:instant, ^content, _instant_meta}
 
     content = "another_message"
     @adapter.send_deliver(consumer, "delayed: #{content}", %{})
-    assert_receive {:delayed, ^content, delayed_meta, callback}
+    assert_receive {:delayed, ^content, _delayed_meta, callback}
     callback.()
 
     expected_history = [

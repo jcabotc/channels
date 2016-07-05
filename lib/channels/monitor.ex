@@ -9,9 +9,11 @@ defmodule Channels.Monitor do
   """
 
   use GenServer
+  require Logger
 
   alias Channels.Adapter
   @adapter Channels.Config.adapter
+  @intervals [0, 10, 100, 1000, 5000]
 
   @type opts :: [GenServer.option | {:adapter, Adapter.t}]
 
@@ -24,9 +26,10 @@ defmodule Channels.Monitor do
   """
   @spec start_link(Adapter.config, opts) :: GenServer.on_start
   def start_link(config, opts \\ []) do
-    {adapter, opts} = Keyword.pop(opts, :adapter, @adapter)
+    {adapter, opts}   = Keyword.pop(opts, :adapter, @adapter)
+    {intervals, opts} = Keyword.pop(opts, :retry_intervals, @intervals)
 
-    GenServer.start_link(__MODULE__, {adapter, config}, opts)
+    GenServer.start_link(__MODULE__, {adapter, intervals, config}, opts)
   end
 
   @doc """
@@ -38,9 +41,9 @@ defmodule Channels.Monitor do
     {:ok, GenServer.call(monitor, {:get, pid})}
   end
 
-  def init({adapter, config}) do
+  def init({adapter, intervals, config}) do
     case adapter.connect(config) do
-      {:ok, conn}      -> {:ok, build_state(adapter, conn)}
+      {:ok, conn}      -> {:ok, build_state(adapter, conn, config, intervals)}
       {:error, reason} -> {:stop, reason}
     end
   end
@@ -54,7 +57,7 @@ defmodule Channels.Monitor do
     reason = {:connection_down, conn_reason}
 
     Enum.each(state.pids, &Process.exit(&1, reason))
-    {:stop, reason, state}
+    {:noreply, reconnect(state)}
   end
 
   def handle_info(_anything, state),
@@ -66,8 +69,38 @@ defmodule Channels.Monitor do
   def terminate(_any_reason, %{adapter: adapter, conn: conn}),
     do: adapter.disconnect(conn)
 
-  defp build_state(adapter, conn) do
+  defp reconnect(%{intervals: intervals} = state) do
+    reconnect(state, intervals)
+  end
+  defp reconnect(state, [last_interval]) do
+    reconnect(state, [last_interval, last_interval])
+  end
+  defp reconnect(%{adapter: adapter, config: config} = state, [interval | rest]) do
+    log_reconnecting(interval, state)
+    :timer.sleep(interval)
+
+    case adapter.connect(config) do
+      {:ok, conn}       -> successful_reconnection(state, conn)
+      {:error, _reason} -> reconnect(state, rest)
+    end
+  end
+
+  defp successful_reconnection(%{adapter: adapter} = state, conn) do
+    log_reconnected(state)
     ref = adapter.monitor(conn)
-    %{adapter: adapter, ref: ref, conn: conn, pids: []}
+    %{state | conn: conn, ref: ref, pids: []}
+  end
+
+  defp build_state(adapter, conn, config, intervals) do
+    ref = adapter.monitor(conn)
+    %{adapter: adapter, ref: ref, conn: conn, pids: [], config: config, intervals: intervals}
+  end
+
+  defp log_reconnecting(interval, %{config: config}) do
+    Logger.warn("Connection down: Waiting #{interval}ms to retry reconnection (config: #{inspect config})")
+  end
+
+  defp log_reconnected(%{config: config}) do
+    Logger.warn("Successfully reconnected (config: #{inspect config})")
   end
 end
