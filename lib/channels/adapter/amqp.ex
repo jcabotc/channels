@@ -47,11 +47,6 @@ if Code.ensure_loaded?(AMQP) do
 
     def consume(%Channel{} = chan, queue, pid \\ self, opts \\ []) do
       Basic.consume(chan, queue, pid, opts)
-
-      {:ok, pid} = GenServer.start_link(DefaultConsumer, :ok)
-      :amqp_selective_consumer.register_default_consumer(chan, pid)
-
-      :ok
     end
 
     def handle({:basic_consume_ok, meta}) do
