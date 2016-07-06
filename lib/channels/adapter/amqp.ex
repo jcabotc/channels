@@ -39,12 +39,6 @@ if Code.ensure_loaded?(AMQP) do
       Queue.bind(chan, queue, exchange, opts)
     end
 
-    defmodule DefaultConsumer do
-      use GenServer
-
-      def handle_info(_anything, state), do: {:noreply, state}
-    end
-
     def consume(%Channel{} = chan, queue, pid \\ self, opts \\ []) do
       Basic.consume(chan, queue, pid, opts)
     end
