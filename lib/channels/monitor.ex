@@ -38,7 +38,7 @@ defmodule Channels.Monitor do
   """
   @spec get_conn(GenServer.server, pid) :: Adapter.conn
   def get_conn(monitor, pid \\ self) do
-    {:ok, GenServer.call(monitor, {:get, pid})}
+    {:ok, GenServer.call(monitor, {:get, pid}, :infinity)}
   end
 
   def init({adapter, intervals, config}) do
