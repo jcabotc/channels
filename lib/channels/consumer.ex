@@ -339,7 +339,7 @@ defmodule Channels.Consumer do
 
   @doc false
   def terminate(reason, %{chan: chan, adapter: adapter}) do
-    IO.inspect "TERMINATING #{inspect __MODULE__}: #{reason}"
+    IO.inspect "TERMINATING #{inspect __MODULE__}: #{inspect reason}"
     adapter.close_channel(chan)
   end
 
