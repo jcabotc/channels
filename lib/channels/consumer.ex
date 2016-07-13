@@ -315,6 +315,11 @@ defmodule Channels.Consumer do
     end
   end
 
+  def terminate(reason, _state) do
+    require Logger
+    Logger.info("TERMINATING CONSUMER (#{inspect(__MODULE__)}): #{inspect(reason)}")
+  end
+
   defp ready(raw_meta, state) do
     {meta, mod, given} = prepare(raw_meta, state)
 
