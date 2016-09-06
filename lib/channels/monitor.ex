@@ -44,7 +44,7 @@ defmodule Channels.Monitor do
   def init({adapter, intervals, config}) do
     case adapter.connect(config) do
       {:ok, conn}      -> {:ok, build_state(adapter, conn, config, intervals)}
-      {:error, reason} -> {:stop, reason}
+      {:error, reason} -> {:stop, {reason, adapter, config}}
     end
   end
 

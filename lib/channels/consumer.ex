@@ -338,7 +338,10 @@ defmodule Channels.Consumer do
   end
 
   @doc false
-  def terminate(_reason, %{chan: chan, adapter: adapter}) do
+  def terminate(reason, %{chan: chan, adapter: adapter}) do
+    require Logger
+
+    Logger.info("TERMINATING #{inspect __MODULE__}: #{inspect reason}")
     adapter.close_channel(chan)
   end
 

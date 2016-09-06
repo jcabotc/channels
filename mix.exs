@@ -4,7 +4,7 @@ defmodule Channels.Mixfile do
   def project do
     [app: :channels,
      description: "An application to manage AMQP consumers and publishers.",
-     version: "0.0.5",
+     version: "0.0.6",
      elixir: "~> 1.2",
      package: package,
      build_embedded: Mix.env == :prod,
