@@ -315,11 +315,6 @@ defmodule Channels.Consumer do
     end
   end
 
-  def terminate(reason, _state) do
-    require Logger
-    Logger.info("TERMINATING CONSUMER (#{inspect(__MODULE__)}): #{inspect(reason)}")
-  end
-
   defp ready(raw_meta, state) do
     {meta, mod, given} = prepare(raw_meta, state)
 
@@ -344,7 +339,9 @@ defmodule Channels.Consumer do
 
   @doc false
   def terminate(reason, %{chan: chan, adapter: adapter}) do
-    IO.inspect "TERMINATING #{inspect __MODULE__}: #{inspect reason}"
+    require Logger
+
+    Logger.info("TERMINATING #{inspect __MODULE__}: #{inspect reason}")
     adapter.close_channel(chan)
   end
 
